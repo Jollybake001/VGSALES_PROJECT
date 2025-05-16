@@ -9,11 +9,15 @@ insert vgsales_2
 select *
 from vgsales;
 
+-- creating a row_number to check for duplicate
+
 Select *,
 row_number() over(partition by 'Rank', Name, platform, 'year', genre,
  publisher, NA_sales, EU_Sales, JP_Sales, Other_sales, global_sales) as row_num
 From vgsales
 ;
+
+-- checking for duplicate rows
 
 with duplicate_cte as
 (Select *,
@@ -24,6 +28,7 @@ select *
 from duplicate_cte 
 where row_num >1;
 
+--checking for misspelled words or missing words to standardize the dataset
 
 select distinct Platform
 from vgsales_2
@@ -38,6 +43,8 @@ from vgsales_2
 where Publisher like 'N/A';
 
 
+-- data exploration
+
 select *
 from vgsales_2
 where Publisher like 'N/A';
@@ -45,6 +52,7 @@ where Publisher like 'N/A';
 select *
 from vgsales_2
 where Year = '';
+
 
 select max(Na_Sales), min(NA_Sales)
 from vgsales_2;
@@ -65,6 +73,7 @@ from vgsales_2
 group by Genre
 order by 2 DESC;
 
+-- platform comparison
 
 select Platform,
 sum(NA_Sales + EU_Sales + JP_Sales + Other_Sales + Global_Sales) as Total_Sales
@@ -72,12 +81,16 @@ from vgsales_2
 group by Platform
 order by 2 DESC;
 
+-- publisher performance
+ 
 select Publisher,
 sum(NA_Sales + EU_Sales + JP_Sales + Other_Sales + Global_Sales) as Total_Sales
 from vgsales_2
 group by Publisher
 order by 2 DESC;
 
+
+-- Regional sales
 
 Select Year,
 sum(NA_Sales) as NA_sales,
@@ -99,13 +112,15 @@ from vgsales_2
 group by Name
 order by Total_Sales DESC LIMIT 10;
 
+-- genre-platform relationship
+
 select genre, platform,
 Format(sum(NA_Sales + EU_Sales + JP_Sales + Other_Sales + Global_Sales), 4) as Total_Sales
 from vgsales_2
 group by Genre, Platform
 order by Total_Sales DESC;
 
-
+--publisher-platform relationship
 
 select Publisher, platform,
 Format(sum(NA_Sales + EU_Sales + JP_Sales + Other_Sales + Global_Sales), 4) as Total_Sales
@@ -126,8 +141,6 @@ from vgsales_2
 group by Year
 order by Year;
 
--- sales distribution
-Select year,  
 
 
 
